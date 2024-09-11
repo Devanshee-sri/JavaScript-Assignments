@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Promises</title>
+    <link rel="shortcut icon" href="./Media/D_logo.jpg" type="image/x-icon">
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",sans-serif;
+      }
+      body {
+        background-color: #5124c2;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+      .btn {
+        padding: 0.6rem 1rem;
+        outline: none;
+        border: 2px solid #06252bca;
+        font-weight: bold;
+        color: #009fbd;
+        background-color: transparent;
+        transition: 0.5s all;
+        cursor: pointer;
+      }
+      .btn:hover {
+        color: white;
+        background-color: #009fbd;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        min-height: 26rem;
+      }
+      .data {
+        background-color: #fff;
+        padding: 1rem;
+        width: 26rem;
+        box-shadow: 10px 10px 10px #00000018;
+        min-height: 1rem;
+        max-height: 26rem;
+        overflow-y: scroll;
+        display: none;
+      }
+      .text {
+        background-color: #f9f1e7;
+        margin: 0.4rem 0;
+        padding: 0.4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="btn">Click Me</button>
+      <div class="data">
+        <p class="text"></p>
+      </div>
+    </div>
+
+    <script>
+      // targeting the DOM elements
+      const btn = document.querySelector(".btn");
+      const para = document.querySelector(".text");
+      const data = document.querySelector(".data");
+      
+      let fetchedDataPosts = [];
+
+      // adding an event listener on button
+      btn.addEventListener("click", () => {
+        para.textContent = "Loading...";
+        data.style.display = "block";
+        let TimeOut = undefined;
+
+        // creating a promise
+        const myPromise = new Promise((res, rej) => {
+          Timeout = setTimeout(() => {
+            rej("Operation TimeOut, Promise Terminated");
+          }, 5000);
+          const apiResponse = fetch("https://dummyjson.com/posts")
+            .then((response) => {
+              return response.json();
+            })
+            .then((result) => {
+              res(result);
+            })
+            .catch((err) => {
+              console.log(`Error fetching data : ${err}`);
+            });
+        });
+
+        // when promise get resolved or rejected
+        myPromise
+          .then((result) => {
+            clearTimeout(Timeout);
+            console.log(result);
+            fetchedDataPosts = result.posts;
+            setData();
+          })
+          .catch((error) => {
+            clearTimeout(Timeout);
+            console.log(error);
+            para.textContent = error;
+          });
+      });
+
+      // seperate function to set the data to the div
+      function setData() {
+        if (fetchedDataPosts.length !== 0) {
+          data.innerHTML = "";
+          fetchedDataPosts.map((item, index) => {
+            const dataContainer = document.createElement("p");
+            dataContainer.classList.add("text");
+
+            dataContainer.innerHTML = `${item.title}`;
+            data.appendChild(dataContainer);
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

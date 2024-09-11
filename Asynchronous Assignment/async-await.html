@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Async-Await</title>
+    <link rel="shortcut icon" href="./Media/D_logo.jpg" type="image/x-icon">
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+      }
+      body {
+        background-color: yellow;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+      .btn {
+        padding: 0.6rem 1rem;
+        outline: none;
+        border: 2px solid #0a551df1;
+        font-weight: bold;
+        color: #0a551df1;
+        background-color: transparent;
+        transition: 0.5s all;
+        cursor: pointer;
+      }
+      .btn:hover {
+        color: #ffffffea;
+        background-color: #207f5cf5;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        min-height: 26rem;
+      }
+      .data {
+        background-color: #ffffffea;
+        padding: 1rem;
+        width: 26rem;
+        box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.273);
+        min-height: 1rem;
+        max-height: 26rem;
+        overflow-y: scroll;
+        display: none;
+      }
+      .text {
+        background-color: #f9f1e7d4;
+        margin: 0.4rem 0;
+        padding: 0.4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="btn">Click Me</button>
+      <div class="data">
+        <p class="text"></p>
+      </div>
+    </div>
+
+    <script>
+      // targeting the DOM elements
+      const btn = document.querySelector(".btn");
+      const para = document.querySelector(".text");
+      const data = document.querySelector(".data");
+
+      let fetchedDataPosts = [];
+
+      // adding an event listener on button
+      btn.addEventListener("click", () => {
+        para.textContent = "Loading...";
+        data.style.display = "block";
+        fetchData();
+      });
+
+      // function to fetch the data from API
+      const fetchData = async () => {
+        try {
+          const Response = await fetch("https://dummyjson.com/posts");
+
+          const fetchdata = await Response.json();
+          fetchedDataPosts = fetchdata.posts;
+          setData();
+        } catch (error) {
+          console.log(error.message);
+          para.textContent = `${error.message}`;
+        }
+      };
+
+      function setData() {
+        if (fetchedDataPosts.length !== 0) {
+          data.innerHTML = "";
+          fetchedDataPosts.map((item, index) => {
+            const dataContainer = document.createElement("p");
+            dataContainer.classList.add("text");
+
+            dataContainer.innerHTML = `${item.title}`;
+            data.appendChild(dataContainer);
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

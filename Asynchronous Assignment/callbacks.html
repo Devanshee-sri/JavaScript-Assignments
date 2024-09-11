@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Callbacks</title>
+    <link rel="shortcut icon" href="./Media/D_logo.jpg" type="image/x-icon">
+    
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+      }
+      body {
+        background-color:rgb(137, 156, 220) ;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+      .btn {
+        padding: 0.6rem 1rem;
+        outline: none;
+        border: 2px solid ;
+        font-weight: bold;
+        color: #5d0b5a;
+        background-color: transparent;
+        transition: 0.5s all;
+        cursor: pointer;
+      }
+      .btn:hover {
+        color: whitesmoke;
+        background-color: #884488;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        min-height: 26rem;
+      }
+      .data {
+        background-color: white;
+        padding: 1rem;
+        width: 26rem;
+        box-shadow: 10px 10px 10px black;
+        min-height: 1rem;
+        max-height: 26rem;
+        overflow-y: scroll;
+        display: none;
+      }
+      .text {
+        background-color: #e6e6e6fb;
+        margin: 0.4rem 0;
+        padding: 0.4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="btn">Click Me</button>
+      <div class="data">
+        <p class="text"></p>
+      </div>
+    </div>
+
+    <script>
+      // targeting the DOM elements
+      const btn = document.querySelector(".btn");
+      const para = document.querySelector(".text");
+      const data = document.querySelector(".data");
+
+      let fetchedDataPosts = [];
+
+      // adding an event listener on button
+      btn.addEventListener("click", () => {
+        para.textContent = "Callback executed after 5 seconds";
+        data.style.display = "block";
+
+        setTimeout(() => {
+          const Response = fetch("https://dummyjson.com/posts");
+          Response.then((res) => {
+            return res.json();
+          })
+            .then((result) => {
+              fetchedDataPosts = result.posts;
+              setData();
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }, 5000);
+      });
+
+      function setData() {
+        if (fetchedDataPosts.length !== 0) {
+          data.innerHTML = "";
+          fetchedDataPosts.map((item, index) => {
+            const dataContainer = document.createElement("p");
+            dataContainer.classList.add("text");
+
+            dataContainer.innerHTML = `${item.title}`;
+            data.appendChild(dataContainer);
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
